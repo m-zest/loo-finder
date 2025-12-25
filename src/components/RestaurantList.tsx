@@ -1,16 +1,18 @@
-import { MapPin, Clock, Phone, Key, Info } from 'lucide-react';
+import { MapPin, Clock, Phone, Key, Info, Edit3 } from 'lucide-react';
 import type { Restaurant } from '../lib/types';
 
 interface RestaurantListProps {
   restaurants: Restaurant[];
   selectedRestaurant: Restaurant | null;
   onRestaurantSelect: (restaurant: Restaurant) => void;
+  onSuggestUpdate: (restaurant: Restaurant) => void;
 }
 
 export default function RestaurantList({
   restaurants,
   selectedRestaurant,
   onRestaurantSelect,
+  onSuggestUpdate,
 }: RestaurantListProps) {
   return (
     <div className="h-full overflow-y-auto bg-white">
@@ -79,11 +81,24 @@ export default function RestaurantList({
                 )}
               </div>
 
-              {restaurant.has_toilet && (
-                <div className="mt-3 inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                  Free Toilet Available
-                </div>
-              )}
+              <div className="mt-3 flex gap-2">
+                {restaurant.has_toilet && (
+                  <div className="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                    Free Toilet Available
+                  </div>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSuggestUpdate(restaurant);
+                  }}
+                  className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+                  title="Suggest an update or correction"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  Update
+                </button>
+              </div>
             </div>
           ))
         )}

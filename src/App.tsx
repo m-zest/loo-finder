@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import Map from './components/Map';
 import RestaurantList from './components/RestaurantList';
+import ContributionModal from './components/ContributionModal';
 import { supabase } from './lib/supabase';
 import type { Restaurant } from './lib/types';
 
@@ -9,6 +11,8 @@ function App() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'new_location' | 'update_suggestion'>('new_location');
 
   useEffect(() => {
     fetchRestaurants();
@@ -58,6 +62,11 @@ function App() {
             restaurants={restaurants}
             selectedRestaurant={selectedRestaurant}
             onRestaurantSelect={setSelectedRestaurant}
+            onSuggestUpdate={(restaurant) => {
+              setSelectedRestaurant(restaurant);
+              setModalType('update_suggestion');
+              setModalOpen(true);
+            }}
           />
         )}
       </div>
@@ -70,7 +79,28 @@ function App() {
             onRestaurantClick={setSelectedRestaurant}
           />
         )}
+        <button
+          onClick={() => {
+            setModalType('new_location');
+            setSelectedRestaurant(null);
+            setModalOpen(true);
+          }}
+          className="absolute bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-all hover:shadow-xl z-40 flex items-center gap-2"
+          title="Add a new restaurant with toilet"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
       </div>
+
+      <ContributionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        type={modalType}
+        restaurant={selectedRestaurant || undefined}
+        onSuccess={() => {
+          setSelectedRestaurant(null);
+        }}
+      />
     </div>
   );
 }
