@@ -1,105 +1,89 @@
-import { MapPin, Clock, Phone, Key, Info, Edit3 } from 'lucide-react';
-import type { Restaurant } from '../lib/types';
+import { useMemo } from 'react';
+import type { Restaurant, FilterOptions } from '../lib/types';
+import ToiletCard from './ToiletCard';
+import SearchFilter from './SearchFilter';
+import StatsBar from './StatsBar';
 
 interface RestaurantListProps {
   restaurants: Restaurant[];
   selectedRestaurant: Restaurant | null;
   onRestaurantSelect: (restaurant: Restaurant) => void;
+  onFeedback: (restaurant: Restaurant) => void;
   onSuggestUpdate: (restaurant: Restaurant) => void;
+  filters: FilterOptions;
+  onFilterChange: (filters: FilterOptions) => void;
 }
 
 export default function RestaurantList({
   restaurants,
   selectedRestaurant,
   onRestaurantSelect,
+  onFeedback,
   onSuggestUpdate,
+  filters,
+  onFilterChange,
 }: RestaurantListProps) {
-  return (
-    <div className="h-full overflow-y-auto bg-white">
-      <div className="p-4 border-b border-gray-200 bg-blue-600 text-white">
-        <h1 className="text-2xl font-bold">Budapest Toilets</h1>
-        <p className="text-sm mt-1 text-blue-100">
-          Find free public toilets at restaurants
-        </p>
-      </div>
+  const filteredRestaurants = useMemo(() => {
+    return restaurants.filter((restaurant) => {
+      // Search filter
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        const matchesSearch =
+          restaurant.name.toLowerCase().includes(searchLower) ||
+          restaurant.address.toLowerCase().includes(searchLower) ||
+          (restaurant.toilet_notes && restaurant.toilet_notes.toLowerCase().includes(searchLower));
+        if (!matchesSearch) return false;
+      }
 
-      <div className="p-4 space-y-3">
-        {restaurants.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <p>No restaurants found</p>
-            <p className="text-sm mt-2">Check back later for updates</p>
+      // Amenity filters
+      if (filters.wheelchairAccessible && !restaurant.amenities?.wheelchair_accessible) return false;
+      if (filters.babyChanging && !restaurant.amenities?.baby_changing) return false;
+      if (filters.freeOnly && !restaurant.amenities?.free) return false;
+      if (filters.genderNeutral && !restaurant.amenities?.gender_neutral) return false;
+
+      // Status filters
+      if (filters.workingOnly && restaurant.toilet_status === 'not_working') return false;
+      if (filters.verifiedOnly && !restaurant.verified) return false;
+
+      return true;
+    });
+  }, [restaurants, filters]);
+
+  return (
+    <div className="h-full flex flex-col bg-gray-50">
+      {/* Stats Bar */}
+      <StatsBar restaurants={restaurants} />
+
+      {/* Search and Filter */}
+      <SearchFilter
+        filters={filters}
+        onFilterChange={onFilterChange}
+        resultCount={filteredRestaurants.length}
+        totalCount={restaurants.length}
+      />
+
+      {/* Restaurant List */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+        {filteredRestaurants.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">🚽</span>
+            </div>
+            <p className="text-gray-600 font-medium">No toilets found</p>
+            <p className="text-sm text-gray-400 mt-1">
+              {filters.search ? 'Try adjusting your search' : 'Try different filters'}
+            </p>
           </div>
         ) : (
-          restaurants.map((restaurant) => (
-            <div
+          filteredRestaurants.map((restaurant) => (
+            <ToiletCard
               key={restaurant.id}
-              onClick={() => onRestaurantSelect(restaurant)}
-              className={`p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${
-                selectedRestaurant?.id === restaurant.id
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-blue-300'
-              }`}
-            >
-              <h3 className="font-semibold text-lg text-gray-900">
-                {restaurant.name}
-              </h3>
-
-              <div className="mt-2 space-y-1.5">
-                <div className="flex items-start gap-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>{restaurant.address}</span>
-                </div>
-
-                {restaurant.opening_hours && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 flex-shrink-0" />
-                    <span>{restaurant.opening_hours}</span>
-                  </div>
-                )}
-
-                {restaurant.phone && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Phone className="w-4 h-4 flex-shrink-0" />
-                    <span>{restaurant.phone}</span>
-                  </div>
-                )}
-
-                {restaurant.toilet_code && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Key className="w-4 h-4 flex-shrink-0 text-blue-600" />
-                    <span className="font-medium text-blue-600">
-                      Code: {restaurant.toilet_code}
-                    </span>
-                  </div>
-                )}
-
-                {restaurant.toilet_notes && (
-                  <div className="flex items-start gap-2 text-sm text-gray-700 bg-yellow-50 p-2 rounded mt-2">
-                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0 text-yellow-600" />
-                    <span>{restaurant.toilet_notes}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-3 flex gap-2">
-                {restaurant.has_toilet && (
-                  <div className="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                    Free Toilet Available
-                  </div>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSuggestUpdate(restaurant);
-                  }}
-                  className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
-                  title="Suggest an update or correction"
-                >
-                  <Edit3 className="w-3 h-3" />
-                  Update
-                </button>
-              </div>
-            </div>
+              restaurant={restaurant}
+              isSelected={selectedRestaurant?.id === restaurant.id}
+              onSelect={() => onRestaurantSelect(restaurant)}
+              onFeedback={() => onFeedback(restaurant)}
+              onUpdate={() => onSuggestUpdate(restaurant)}
+            />
           ))
         )}
       </div>
