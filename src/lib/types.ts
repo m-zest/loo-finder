@@ -28,8 +28,19 @@ export interface Restaurant {
   amenities: ToiletAmenities | null;
   verified: boolean;
   last_verified: string | null;
+  upvotes: number;
+  downvotes: number;
   created_at: string;
   updated_at: string;
+  distance?: number; // calculated client-side in km
+}
+
+export interface Vote {
+  id: string;
+  restaurant_id: string;
+  vote_type: 'confirm' | 'deny';
+  comment: string | null;
+  created_at: string;
 }
 
 export interface Contribution {
@@ -63,28 +74,6 @@ export interface Feedback {
   created_at: string;
 }
 
-export interface Database {
-  public: {
-    Tables: {
-      restaurants: {
-        Row: Restaurant;
-        Insert: Omit<Restaurant, 'id' | 'created_at' | 'updated_at' | 'rating' | 'rating_count' | 'verified' | 'last_verified'>;
-        Update: Partial<Omit<Restaurant, 'id' | 'created_at' | 'updated_at'>>;
-      };
-      contributions: {
-        Row: Contribution;
-        Insert: Omit<Contribution, 'id' | 'created_at' | 'status'>;
-        Update: Partial<Omit<Contribution, 'id' | 'created_at'>>;
-      };
-      feedback: {
-        Row: Feedback;
-        Insert: Omit<Feedback, 'id' | 'created_at' | 'is_resolved'>;
-        Update: Partial<Omit<Feedback, 'id' | 'created_at'>>;
-      };
-    };
-  };
-}
-
 export interface FilterOptions {
   search: string;
   wheelchairAccessible: boolean;
@@ -93,4 +82,10 @@ export interface FilterOptions {
   genderNeutral: boolean;
   workingOnly: boolean;
   verifiedOnly: boolean;
+  nearbyOnly: boolean;
+}
+
+export interface UserLocation {
+  latitude: number;
+  longitude: number;
 }
