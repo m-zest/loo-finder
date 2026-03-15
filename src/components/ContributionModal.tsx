@@ -97,8 +97,8 @@ export default function ContributionModal({ isOpen, onClose, type, restaurant, o
         }] as never);
         if (error) throw error;
       } else if (restaurant) {
-        if (!formData.email || !formData.updateDescription) {
-          throw new Error('Please provide your email and describe the update');
+        if (!formData.updateDescription) {
+          throw new Error('Please describe the update');
         }
         const { error } = await supabase.from('contributions').insert([{
           restaurant_id: restaurant.id,
@@ -112,7 +112,7 @@ export default function ContributionModal({ isOpen, onClose, type, restaurant, o
           toilet_status: formData.toiletStatus,
           amenities: formData.amenities,
           contribution_type: 'update_suggestion',
-          user_email: formData.email,
+          user_email: formData.email || null,
           description: formData.updateDescription,
         }] as never);
         if (error) throw error;
@@ -304,9 +304,12 @@ export default function ContributionModal({ isOpen, onClose, type, restaurant, o
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Your Email *</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Your Email {type === 'new_location' ? '*' : '(optional)'}
+                </label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange}
-                  placeholder="you@email.com" className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" required />
+                  placeholder="you@email.com" className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  required={type === 'new_location'} />
               </div>
 
               {error && (
