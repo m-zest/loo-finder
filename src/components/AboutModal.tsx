@@ -1,4 +1,4 @@
-import { X, MapPin, Heart, Users, Shield, Star } from 'lucide-react';
+import { X, MapPin, Heart, Shield, Star, Navigation, ThumbsUp } from 'lucide-react';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -11,113 +11,98 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white p-6">
+        <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white p-5">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-3 rounded-xl">
-                <MapPin className="w-8 h-8" />
+              <div className="bg-white/20 p-2.5 rounded-xl">
+                <MapPin className="w-7 h-7" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">Budapest Loo Finder</h2>
-                <p className="text-blue-100 text-sm mt-1">Community-powered toilet finder</p>
+                <h2 className="text-xl font-bold">Budapest Loo Finder</h2>
+                <p className="text-blue-200 text-xs mt-0.5">Find free toilets, skip the hassle</p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-            >
+            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
-          <div className="space-y-6">
-            {/* Mission */}
+        <div className="p-5 overflow-y-auto max-h-[60vh]">
+          <div className="space-y-5">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Heart className="w-5 h-5 text-red-500" />
-                Our Mission
+              <h3 className="text-base font-semibold text-gray-900 mb-1.5 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-red-500" /> Our Mission
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Finding a clean, accessible public toilet in Budapest shouldn't be a challenge.
-                We're building a comprehensive, community-driven database of free public toilets
-                available at restaurants, cafes, and other venues throughout the city.
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Finding a free toilet in Budapest shouldn't be stressful. We map every restaurant,
+                cafe, mall, and public space where you can use the toilet - with access codes,
+                walking directions, and real-time community updates.
               </p>
             </div>
 
-            {/* How it Works */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-500" />
-                How It Works
+              <h3 className="text-base font-semibold text-gray-900 mb-1.5 flex items-center gap-2">
+                <Navigation className="w-4 h-4 text-blue-500" /> How It Works
               </h3>
-              <ul className="text-gray-600 space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
-                  <span>Browse the map or list to find nearby toilets</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
-                  <span>Check access codes, directions, and availability</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
-                  <span>Contribute by adding new locations or updating info</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">4</span>
-                  <span>Leave feedback to help keep data accurate</span>
-                </li>
+              <ul className="text-sm text-gray-600 space-y-2">
+                {[
+                  'Allow location access to see toilets sorted by distance',
+                  'Check the access code and indoor directions before going',
+                  'Tap "Go" for walking directions via Google Maps',
+                  'Vote to confirm info is correct, or report changes',
+                ].map((step, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="w-5 h-5 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            {/* Features */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500" />
-                Features
+              <h3 className="text-base font-semibold text-gray-900 mb-1.5 flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-500" /> Features
               </h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  'Access codes',
-                  'Directions inside',
-                  'Accessibility info',
-                  'Baby changing',
-                  'User ratings',
-                  'Real-time updates',
-                  'Verified locations',
-                  'Community feedback',
-                ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  'Access codes', 'Walking directions', 'Wheelchair info', 'Baby changing',
+                  'Community voting', 'Distance sorting', 'Free/paid filter', 'Real-time updates',
+                ].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-gray-600">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                     {feature}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Privacy */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-green-500" />
-                Privacy & Community
+              <h3 className="text-base font-semibold text-gray-900 mb-1.5 flex items-center gap-2">
+                <ThumbsUp className="w-4 h-4 text-green-500" /> Community Powered
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Your contributions help everyone. We don't track your location or require
-                registration. Email is optional and only used for follow-up if needed.
-                All submissions are reviewed before being published.
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Every location is verified by the community. Vote to confirm info is correct,
+                report changes, add new locations, and help fellow travelers and locals alike.
+                No registration required.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-1.5 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-green-500" /> Privacy
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Your location is only used to show distances and sort results. We don't track
+                or store your position. Email is optional and never shared.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50">
-          <p className="text-center text-sm text-gray-500">
-            Made with <Heart className="w-4 h-4 inline text-red-500 mx-1" /> in Budapest
+        <div className="border-t border-gray-200 p-3 bg-gray-50">
+          <p className="text-center text-xs text-gray-500">
+            Made with <Heart className="w-3 h-3 inline text-red-500 mx-0.5" /> in Budapest
           </p>
         </div>
       </div>

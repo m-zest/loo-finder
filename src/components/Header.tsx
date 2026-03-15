@@ -1,4 +1,4 @@
-import { MapPin, Info, Github, Menu, X } from 'lucide-react';
+import { MapPin, Info, Shield, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeaderProps {
@@ -10,73 +10,62 @@ export default function Header({ onAboutClick }: HeaderProps) {
 
   return (
     <header className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-lg z-50">
-      <div className="max-w-full mx-auto px-4 py-3">
+      <div className="max-w-full mx-auto px-4 py-2.5">
         <div className="flex items-center justify-between">
-          {/* Logo and Brand */}
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 backdrop-blur-sm p-2 rounded-xl">
-              <MapPin className="w-7 h-7 text-white" />
+          <a href="#/" className="flex items-center gap-2.5">
+            <div className="bg-white/20 backdrop-blur-sm p-1.5 rounded-lg">
+              <MapPin className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              <h1 className="text-lg md:text-xl font-bold tracking-tight leading-tight">
                 Budapest Loo Finder
               </h1>
-              <p className="text-xs md:text-sm text-blue-100 hidden sm:block">
-                Community-powered free public toilets
+              <p className="text-[10px] md:text-xs text-blue-200 hidden sm:block leading-tight">
+                Find free toilets near you
               </p>
             </div>
-          </div>
+          </a>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-3">
             <button
               onClick={onAboutClick}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 text-sm font-medium"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
             >
               <Info className="w-4 h-4" />
               About
             </button>
             <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 text-sm font-medium"
+              href="#/admin"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
             >
-              <Github className="w-4 h-4" />
-              Contribute
+              <Shield className="w-4 h-4" />
+              Admin
             </a>
           </nav>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-4 pt-4 border-t border-white/20 flex flex-col gap-2">
+          <nav className="md:hidden mt-3 pt-3 border-t border-white/20 flex flex-col gap-2 pb-1">
             <button
-              onClick={() => {
-                onAboutClick();
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
+              onClick={() => { onAboutClick(); setMobileMenuOpen(false); }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
             >
               <Info className="w-4 h-4" />
-              About This Project
+              About
             </button>
             <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
+              href="#/admin"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm font-medium"
             >
-              <Github className="w-4 h-4" />
-              Contribute on GitHub
+              <Shield className="w-4 h-4" />
+              Admin Panel
             </a>
           </nav>
         )}
